@@ -4,13 +4,13 @@
 
 - Path from X to Y
 
--- MCL Project
+  - MCL Project
 
 - Hunt Balloon
 
--- Color Threshold and Ultrasonic Project
--- PID control
+  - Color Threshold and Ultrasonic Project
+  - PID control
 
 - Drive Straight
 
--- PID control
+  - PID control
