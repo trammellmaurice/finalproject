@@ -24,7 +24,7 @@ def aStar(rob_pos,curr_dict,goal_dict):
         goal_dict[k] = tuple(goal_dict[k])
     brd = State(rob_pos,curr_dict)
     goal = State(rob_pos,goal_dict)
-    locs = curr_dict.values()
+    locs = set(curr_dict.values()).union(set(goal_dict.values()))
     objs = goal_dict.keys()
     Q = PriQue()
     closed = set()
@@ -57,16 +57,16 @@ def aStar(rob_pos,curr_dict,goal_dict):
     return get_path(brd)
 
 def main():
-    balloons = {'yellow':[-1,-1],
-                'green':[4,-1],
-                'red':[1,1],
-                'blue':[5,5],
-                'pink':[10,10]}
-    balloons_g = {'yellow':[4,-1],
-                'green':[1,1],
-                'red':[5,5],
-                'blue':[10,10],
-                'pink':[-1,-1]}
+    balloons = {'yellow': [-1,-1],
+                'green': [4,-1],
+                'red': [1,1],
+                'blue': [5,5],
+                'pink': [10,10]}
+    balloons_g = {'yellow': [4,-1],
+                'green': [1,1],
+                'red': [5,5],
+                'blue': [10,10],
+                'pink': [-1,-1]}
     m = aStar((0,0),balloons,balloons_g)
     print(m)
     return

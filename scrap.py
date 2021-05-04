@@ -154,9 +154,6 @@ fend = open(args.end_file_name,)
 data_start = json.load(fstart)
 data_end = json.load(fend)
 
-print(data_start)
-print(data_end)
-
 actions = astar.aStar((3.22306, -4.1509),data_start,data_end)
 
 print(actions)
