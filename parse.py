@@ -1,9 +1,21 @@
 import json
+import argparse
 
-## TODO argparse for start and end states
+# user interface
+#PARSING AND CREATING ADJANCEY MATRIX
+parser = argparse.ArgumentParser()
+parser.add_argument("start_file_name")
+parser.add_argument("end_file_name")
+args = parser.parse_args()
 
-f = open("balloons.txt", "r")
-j = f.read()
+fstart = open(args.start_file_name, "r")
+fend = open(args.start_file_name, "r")
 
-data = json.loads(j)
+jstart = fstart.read()
+data = json.loads(jstart)
+
+
+jend = fstart.read()
+data = json.loads(jend)
+
 print(data)
