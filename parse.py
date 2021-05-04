@@ -12,6 +12,5 @@ fstart = open(args.start_file_name,)
 fend = open(args.end_file_name,)
 # fend = open(args.start_file_name,)
 
-datastart = json.load(fstart)
-dataend = json.load(fend)
-print(dataend)
+data_start = json.load(fstart)
+data_end = json.load(fend)

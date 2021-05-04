@@ -1,15 +1,15 @@
 import numpy as np
 import json
 import argparse
-# from Queue import PriorityQueue
 from queue import PriorityQueue
-# import rospy
+
+import rospy
+import realDemo
 
 import astar
 from graph import *
-# import realDemo
 
-# from turtleAPI import robot
+from turtleAPI import robot
 
 from pid import pidController
 """
@@ -29,8 +29,8 @@ def planPath(destination):
     print("planning path to ",destination)
     print()
     # Robot's current location
-    # current_position = R.getMCLPose()
-    current_position = (3.22306, -4.1509)
+    current_position = R.getMCLPose()
+    # current_position = (3.22306, -4.1509)
     # Make a graph with start and endpoint from dot file
     G = Graph()
     G.build_from_dot("map.dot",current_position[0],current_position[1],destination[0],destination[1])
@@ -53,7 +53,7 @@ def planPath(destination):
                     next[0].g = pos.g + next[1]
                     q.put((next[0].g, next[0]))
                     next[0].parent = pos
-    pos = q.get()[1]
+        pos = q.get()[1]
 
     path = []
 
@@ -62,7 +62,7 @@ def planPath(destination):
         path.insert(0, pos.parent)
         pos = pos.parent
 
-    print(path)
+    return path
 
 
 """
@@ -70,13 +70,10 @@ def planPath(destination):
 # OUTPUT True when done
 """
 def travelPath(path):
-
-    # for vertex in path:
-        # Robot current position
+    for vertex in path:
         # get vertex location
-        #calculate yaw and distance
-        # while not at vertex and not rospy.is_shutdown():
-            # driveMCL(vertex)
+        location = (vertex.x,vertex.y)
+        driveMCL(location)
     return True
 
 
@@ -90,6 +87,7 @@ OUTPUT None
 """
 def balloonSearch(color):
     realDemo.hunt(color)
+    return
 
 """
 DRIVE ROBOT
@@ -98,7 +96,7 @@ DRIVE ROBOT
 """
 DRIVE MCL
 INPUT destination (x,y)
-OUTPUT True
+OUTPUT None
 """
 def driveMCL(destination):
     # Robot current pose
@@ -109,9 +107,10 @@ def driveMCL(destination):
     destination = (destination[0],destination[1],angle)
     # find distance to goal
     distance = calculateDistance(destination,current_position)
+
     # create PID controllers
-    linear_controller = pidController(0.5,0,0.5)
-    angular_controller = pidController(0.75)
+    linear_controller = pidController(0.2,0,0.1)
+    angular_controller = pidController(0.8)
 
     # find yaw to goal
     destination[2] = calculateAbsoluteYaw(destination,current_position)
@@ -171,8 +170,8 @@ def calculateYaw(goal, current):
 MAIN
 """
 
-# rate = rospy.Rate(20)
-# R = robot()
+rate = rospy.Rate(20)
+R = robot()
 
 # user interface
 #PARSING AND CREATING ADJANCEY MATRIX
@@ -184,7 +183,6 @@ args = parser.parse_args()
 # file objects
 fstart = open(args.start_file_name,)
 fend = open(args.end_file_name,)
-# fend = open(args.start_file_name,)
 
 #JSON to dictionary
 data_start = json.load(fstart)
@@ -211,7 +209,7 @@ for action in actions:
         print(action)
         print()
         path = planPath(action[1]) # get list of vertices to travel
-    #     travelPath(path)
+        travelPath(path)
     elif action[0] == "pickup":
         balloonSearch(action[1])
         print(action)
