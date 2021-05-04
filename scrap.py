@@ -55,7 +55,7 @@ INPUT color of balloon
 OUTPUT None
 """
 def balloonSearch(color):
-    realDemo(color)
+    realDemo.hunt(color)
     return
 
 """
