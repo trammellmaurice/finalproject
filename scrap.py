@@ -1,5 +1,6 @@
 import numpy as np
 import rospy
+import astar
 
 from turtleAPI import robot
 
@@ -151,7 +152,7 @@ jend = fstart.read()
 data_start = json.loads(jstart)
 data_end = json.loads(jend)
 
-
+actions = astar.aStar((3.22306, -4.1509),data_start,data_end)
 
 
 # for action in ACTION_LIST:
