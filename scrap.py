@@ -1,8 +1,13 @@
 import numpy as np
 import json
 import argparse
+# from Queue import PriorityQueue
+from queue import PriorityQueue
 # import rospy
+
 import astar
+from graph import *
+# import realDemo
 
 # from turtleAPI import robot
 
@@ -10,10 +15,6 @@ from pid import pidController
 """
 ACTION PLANNING
 **OUTPUT a LIST of actions []
-"""
-
-"""
-"move 1,1"
 """
 
 """
@@ -25,16 +26,51 @@ PATHING
 #OUTPUT a LIST of vertices for each travel action
 """
 def planPath(destination):
+    print("planning path to ",destination)
+    print()
     # Robot's current location
+    # current_position = R.getMCLPose()
+    current_position = (3.22306, -4.1509)
     # Make a graph with start and endpoint from dot file
+    G = Graph()
+    G.build_from_dot("map.dot",current_position[0],current_position[1],destination[0],destination[1])
     # Djikstras to get path to endpoint
-    pass
+    ### TODO FIX Dijkstras
+    pos = G.get_start()
+    q = PriorityQueue()
+    pos.g = 0
+    pos.seen = True
+    while pos != G.get_goal():
+        for next in G.get_neighbors(pos):
+            #if not seen
+            if next[0].seen == False:
+                next[0].g = pos.g + next[1]
+                q.put((next[0].g, next[0]))
+                next[0].parent = pos
+                next[0].seen = True
+            else:
+                if next[0].g > (pos.g + next[1]):
+                    next[0].g = pos.g + next[1]
+                    q.put((next[0].g, next[0]))
+                    next[0].parent = pos
+    pos = q.get()[1]
+
+    path = []
+
+    path.insert(0, G.get_goal())
+    while pos.parent != None:
+        path.insert(0, pos.parent)
+        pos = pos.parent
+
+    print(path)
+
 
 """
 # INPUT a LIST of vertices
 # OUTPUT True when done
 """
 def travelPath(path):
+
     # for vertex in path:
         # Robot current position
         # get vertex location
@@ -46,7 +82,6 @@ def travelPath(path):
 
 """
 FIND BALOONS
-
 """
 
 """
@@ -54,8 +89,7 @@ INPUT color of balloon
 OUTPUT None
 """
 def balloonSearch(color):
-    # TODO Balloon color search and depth sense
-    pass
+    realDemo.hunt(color)
 
 """
 DRIVE ROBOT
@@ -147,23 +181,39 @@ parser.add_argument("start_file_name")
 parser.add_argument("end_file_name")
 args = parser.parse_args()
 
+# file objects
 fstart = open(args.start_file_name,)
 fend = open(args.end_file_name,)
 # fend = open(args.start_file_name,)
 
+#JSON to dictionary
 data_start = json.load(fstart)
 data_end = json.load(fend)
 
+# printouts
+print()
+print("Start Dictionary")
 print(data_start)
+print("End Dictionary")
 print(data_end)
 
+# get list of actions
 actions = astar.aStar((3.22306, -4.1509),data_start,data_end)
 
+print()
+print("Actions")
 print(actions)
+print()
 
-# for action in actions:
-#     if action contains "move":
-#         path = planPath(destination) # get list of vertices to travel
-#         travelPath(path)
-#     elif action contains "pickup":
-#         balloonSearch(color)
+for action in actions:
+    # print(action)
+    if action[0] == "move":
+        print(action)
+        print()
+        path = planPath(action[1]) # get list of vertices to travel
+    #     travelPath(path)
+    elif action[0] == "pickup":
+        balloonSearch(action[1])
+        print(action)
+    elif action[0] == "putdown":
+        print(action)

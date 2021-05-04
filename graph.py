@@ -20,9 +20,9 @@ class Node:
         self.label = label
         self.x = x
         self.y = y
-	self.seen = False
+        self.seen = False
         self.g = 0
-	self.parent = None
+        self.parent = None
 
     def __repr__(self):
         return self.label+' '+str(self.x)+' '+str(self.y)
