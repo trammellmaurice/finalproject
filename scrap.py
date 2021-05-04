@@ -1,6 +1,7 @@
 import numpy as np
 import json
 import argparse
+import realDemo
 # import rospy
 import astar
 
@@ -54,8 +55,8 @@ INPUT color of balloon
 OUTPUT None
 """
 def balloonSearch(color):
-    # TODO Balloon color search and depth sense
-    pass
+    realDemo(color)
+    return
 
 """
 DRIVE ROBOT
